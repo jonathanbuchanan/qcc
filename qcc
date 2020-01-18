@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import shutil
+
+def test():
+    print("HELLO WORLD")
+
+# Parse arguments
+parser = argparse.ArgumentParser(description="Simple C/C++ build tool")
+parser.add_argument("-v", "--verbose", help="show compilation messages", action="store_true")
+args = parser.parse_args()
+
+verbose = args.verbose
+
+# Find C and C++ compilers in PATH
+c_compiler = shutil.which("gcc")
+cxx_compiler = shutil.which("g++")
+
+if verbose:
+    print(f"C: {c_compiler}")
+    print(f"CXX: {cxx_compiler}")
+
+# Find all .c and .cpp files in the current directory
+c_sources = []
+cpp_sources = []
+
+for f in os.listdir("./"):
+    if f.endswith(".c"):
+        c_sources.append(f)
+    if f.endswith(".cpp"):
+        cpp_sources.append(f)
+
+if verbose:
+    if len(c_sources) > 0:
+        src_list = "C Sources: "
+        for src in c_sources[:-1]:
+            src_list += src + ", "
+        src_list += c_sources[-1]
+        print(src_list)
+
+    if len(cpp_sources) > 0:
+        src_list = "C++ Sources: "
+        for src in cpp_sources[:-1]:
+            src_list += src + ", "
+        src_list += cpp_sources[-1]
+        print(src_list)
+
+# Iterate through these files and compile them individually
+import subprocess
+
+for src in c_sources:
+    subprocess.call([c_compiler, src, "-o", os.path.splitext(src)[0]])
+
+for src in cpp_sources:
+    subprocess.call([cxx_compiler, src])
