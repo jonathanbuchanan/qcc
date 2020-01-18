@@ -54,4 +54,4 @@ for src in c_sources:
     subprocess.call([c_compiler, src, "-o", os.path.splitext(src)[0]])
 
 for src in cpp_sources:
-    subprocess.call([cxx_compiler, src])
+    subprocess.call([cxx_compiler, src, "-o", os.path.splitext(src)[0]])
