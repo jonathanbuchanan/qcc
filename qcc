@@ -47,11 +47,30 @@ if verbose:
         src_list += cpp_sources[-1]
         print(src_list)
 
+# Get all sources that need recompilation
+c_to_compile = []
+cpp_to_compile = []
+for src in c_sources:
+    out = os.path.splitext(src)[0]
+    if os.path.isfile(out):
+        if os.path.getmtime(src) > os.path.getmtime(out):
+            c_to_compile.append(src)
+    else:
+        c_to_compile.append(src)
+
+for src in cpp_sources:
+    out = os.path.splitext(src)[0]
+    if os.path.isfile(out):
+        if os.path.getmtime(src) > os.path.getmtime(out):
+            cpp_to_compile.append(src)
+    else:
+        cpp_to_compile.append(src)
+
 # Iterate through these files and compile them individually
 import subprocess
 
-for src in c_sources:
+for src in c_to_compile:
     subprocess.call([c_compiler, src, "-o", os.path.splitext(src)[0]])
 
-for src in cpp_sources:
+for src in cpp_to_compile:
     subprocess.call([cxx_compiler, src, "-o", os.path.splitext(src)[0]])
